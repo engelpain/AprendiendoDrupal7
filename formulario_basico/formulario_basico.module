@@ -1,0 +1,89 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-04 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_basico.module
+ */
+
+
+
+/**
+ * Implements hook_menu()
+ * Crea un enlace a la página /formexample/
+ * Llamando a la función formulario_basico_form() que contiene el formulario 
+ */
+function formulario_basico_menu(){
+  $items['formexample'] = array(
+    'title' => 'Accede al formulario',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('formulario_basico_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+
+
+/**
+ * Implements hook_form().
+ */
+function formulario_basico_form(){
+ 
+  $form['name'] = array(
+    '#title' => t('Nombre'),
+    '#type' => 'fieldset',
+    '#description' => t('¿Cómo te suelen llamar?'),
+  );
+  $form['name']['user_name'] = array(
+    '#title' => t('Your name'),
+    '#type' => 'textfield',
+    '#description' => t('Introduce tu nombre'),
+  );
+  $form['color'] = array(
+    '#title' => t('Color'),
+    '#type' => 'fieldset',
+    '#description' => t('Informacíon sobre tus gustos'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['color_options'] = array(
+    '#type' => 'value',
+    '#value' => array(t('Rojo'),t('Amarillo'),t('Verde'),t('Azul')),
+  );
+  $form['color']['favorite_color'] = array(
+    '#title' => t('Color Favorito'),
+    '#type' => 'select',
+    '#description' => t('Por favor selecciona un color'),
+    '#options' => $form['color_options']['#value'],
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+// Función para validar el formulario 
+function formulario_basico_form_validate(&$form, &$form_state){
+  if($form_state['values']['user_name'] == 'King Kong'){
+    //We notify the form API that this field has failed.
+    form_set_error('user_name', t('King Kong no es una persona'));
+  }
+}
+
+/**
+ * Handle post_validate form submission.
+ */
+ 
+function formulario_basico_form_submit(&$form, &$form_state){
+  $name = $form_state['values']['user_name'];
+  $color_key = $form_state['values']['favorite_color'];
+  $color = $form_state['values']['color_options'][$color_key];
+  drupal_set_message(t('A %name le gusta el color %color',array('%name' => $name, '%color' => $color)));
+}
