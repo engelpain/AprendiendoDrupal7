@@ -1,0 +1,131 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-03 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_particionado.module
+ */
+
+/**
+ * Implementación del hook_menu().
+ * Crea un acceso al formulario que se está creando en el menú de navegación
+ */
+function formulario_particionado_menu() {
+  $items['form_tutorial/form'] = array(
+    'title' => t('Mi Formulario'),
+    'page callback' => 'formulario_particionado_form',
+    'access arguments' => array('access content'),
+    'page arguments' => array(),
+    'type' => MENU_NORMAL_ITEM,
+    'description' => t('Formulario particionado de prueba'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ */
+function formulario_particionado_form() {
+  // Este formulario llama al constructor de formularios con la función drupal_get_form()
+  // quien toma el nombre de esta función constructora de formulario como un argumento.
+  // Devuelve el resultado en pantalla como un formulario.
+  return drupal_get_form('formulario_particionado_my_form');
+}
+
+// Esta función es denominada el constructor de formularios.
+// Se encarga de crear el formulario.
+// Nota: él requiere un argumento, el $form_state.
+function formulario_particionado_my_form($form_state) {
+
+  // Ésta es la descripción del formulario
+  $form['description'] = array(
+    // type: item - Utilizado para agregar información al formulario
+    '#type' => 'item',
+    // title: Imprime la información que se quiere comunicar como título del comunicado
+    '#title' => t('Título de información del formulario'),
+    // description: Imprime la información que se quiere comunicar como descripción del comunicado
+    '#description' => t('Descripción de información del formulario'),
+  );
+  // Fieldset
+  $form['identificacion'] = array(
+    '#type' => 'fieldset',
+    // title: Descripción del fieldset
+    '#title' => t('Identificación'),
+    // collapsible: TRUE - Hace al fieldset plegable
+    '#collapsible' => TRUE,
+    // collapsed: Si el fieldset es plegable, determina si se mostrará plegado o desplegado
+    '#collapsed' => FALSE,
+  );
+  // Campo de texto
+  $form['identificacion']['nombre'] = array(
+    // type: textfield - Lo declara como un campo de texto
+    '#type' => 'textfield',
+    //title: Descripción del campo
+    '#title' => t('Nombre'),
+    // size: Tamaño visible del campo
+    '#size' => 25,
+    // maxlength: Cantidad máxima de caracteres que se puede ingresar en el campo
+    '#maxlength' => 25,
+    // required: TRUE - Hace obligatorio el llenado del campo
+    '#required' => TRUE,
+  );
+  // Campo de texto
+  $form['identificacion']['apellido'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Apellido'),
+    '#size' => 25,
+    '#maxlength' => 25,
+    '#required' => TRUE,
+  );
+  // Campo de texto
+  $form['identificacion']['cedula'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Cédula'),
+    '#size' => 8,
+    '#maxlength' => 8,
+    '#required' => TRUE,
+    '#description' => t('Solo números'),
+    // default_value: Determina el valor por defecto del formulario
+    '#default_value' => rand(1000000, 99999999),
+  );
+  $form['identificacion']['ayuda'] = array(
+    // Tipo del campo: Item
+    '#type' => 'item',
+    '#description' => t('Todos los campos son requeridos'),
+  );
+
+  // Fieldset
+  $form['empresa'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Empresa'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  // Campo de texto
+  // Este campo será validado con la función externa
+  // formulario_particionado_my_form_validate
+  $form['year_of_birth'] = array(
+    '#type' => 'textfield',
+    '#title' => "Year of birth",
+    '#description' => 'Format is "YYYY"',
+  );
+
+  // Botón de envío de datos
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+// Función validadora del formulario
+// function formulario_particionado_my_form_validate($form, &$form_state) {
+//   $ingreso = $form_state['values']['ingreso'];
+//   if ($ingreso && ($ingreso < 2005 || $ingreso > 2017)) {
+//     form_set_error('ingreso', 'Ingrese un año entre 2005 and 2017.');
+//   }
+// }

@@ -1,0 +1,121 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario con Ajax
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-10 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_ajax.module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function formulario_ajax_menu() {
+  $items['formulario_ajax'] = array(
+    'title' => 'Formulario con Ajax',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('formulario_ajax_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+/**
+ * Define un formulario usando Ajax:
+ * - Muestra dos listas select donde una es dependiente de la otra,
+ *     modelos depende de marcas.
+ * - Cuando cambie la marca del primer select se deben actualizar los
+ *     modelos del segundo select con los modelos de la marca selectionada.
+ */
+
+function formulario_ajax_form($form, &$form_state){
+  // Obtenemos la lista de marcas disponibles
+  $options_marcas = marcas();
+  // Verificamos si el select de marcas ya tiene una opcion seleccionada,
+  // sino establecemos una por defecto.
+  $selected = isset($form_state['values']['marcas_dropdown']) ? $form_state['values']['marcas_dropdown'] : key($options_marcas);
+  // Definimos el primer select: Marcas
+  $form['marcas_dropdown'] = array(
+    '#type' => 'select',
+    '#title' => 'Marcas',
+    '#options' => $options_marcas,
+    '#default_value' => $selected,
+  // Incorporamos la propiedad de #ajax para que ante un cambio de marca
+  // se actualicen los modelos asociados a dicha marca.
+    '#ajax' => array(
+      'callback' => 'automobile_modelos_dependientes_callback',
+  // Id del elemento que vamos a reemplazar.
+      'wrapper' => 'dropdown_modelos_replace',
+    ),
+  );
+//Select de modelos
+  $form['modelos_dropdown'] = array(
+    '#type' => 'select',
+    '#title' => 'Modelos',
+    '#options' => _automobile_get_modelos_dropdown_options($selected),
+    '#default_value' => isset($form_state['values']['modelos_dropdown']) ? $form_state['values']['modelos_dropdown'] : '' ,
+//Encapsulamos el select dentro del div 'dropdown_modelos_replace' para poder reemplazarlo
+//usando ajax.
+    '#prefix' => '
+    <div id="dropdown_modelos_replace">',
+    '#suffix' => '</div>
+    ',
+  );
+//Submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+/**
+ * Función auxiliar que nos devuelve las marcas para el select de marcas.
+ * Normalmente deberia obtener su información de la base de datos.
+ *
+ * @return array of options.
+ */
+function marcas(){
+  return drupal_map_assoc(array(t('Honda'), t('Toyota'), t('Ford'), t('Volkswagen')));
+}
+
+/**
+ * Solo seleciona el select de modelos para ser retornado para ser re-renderizado.
+ * Será recargado con las nuevas opciones según la marca seleccionada.
+ *
+ * @return renderable array (select de modelos).
+ */
+function automobile_modelos_dependientes_callback($form, $form_state){
+ 
+ return $form['modelos_dropdown'];
+ 
+}
+ 
+/**
+ * Función auxiliar que nos devuelve los modelos para el select de modelos.
+ * Normalmente deberia obtener su información de la base de datos.
+ *
+ * @param key. Determina el conjunto de modelos a devolver.
+ *
+ * @return array of options.
+ */
+function _automobile_get_modelos_dropdown_options($key = ''){
+  //Definimos un array anidados con las opciones posibles
+  //En realidad lo deberiamos obtener de BD.
+  $options = array(
+    t('Honda') => drupal_map_assoc(array(t('Accord'), t('Civic'), t('CRX'), t('Pilot'))),
+    t('Toyota') => drupal_map_assoc(array(t('Camry'), t('Yaris'), t('Tundra'), t('Tacoma'))),
+    t('Ford') => drupal_map_assoc(array(t('F-150'), t('Explorer'), t('Escape'), t('Edge'))),
+    t('Volkswagen') => drupal_map_assoc(array(t('GTI'), t('Passat'), t('Jeta'), t('Polo'))),
+  );
+ 
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}

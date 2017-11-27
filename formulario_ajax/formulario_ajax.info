@@ -1,0 +1,16 @@
+; Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+; CENDITEL, Mérida - Venezuela
+; Dirección de Desarrollo
+; Módulo Drupal para crear un formulario con Ajax
+; @author Ing. Angelo Osorio
+; @date 2017-10-10 // (dd,mm,yyyy)
+; @version 1.-dev // (1.0)
+; @file formulario_ajax.info
+
+name = Formulario Dinámico con Ajax
+description = "Módulo que incorpora un formulario dinámico usando Hooks de Ajax"
+core = 7.x
+package = Aprendiendo Drupal
+version = "7.x-1.-dev"
+files[] = formulario_ajax.module
+datestamp = "1507636800"
