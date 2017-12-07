@@ -93,4 +93,30 @@
     <p> Si se realizaron con veracidad los pasos anteriores, no debería mostrar ningún problema, y sólo se debe hacer click en <b>continuar con la instalación</b>
     </p>
   </li>
+  <li>
+    <p>Se procede a configurar los datos de la base de datos.</p>
+    <p><img src="../img/img5.png" alt="img5"></p>
+    <p>En este caso la base de datos se creó en PostgreSQL, entonces se selecciona la opción homónima</p>
+    <p>En el campo <b>Nombre de la base de datos</b> se debe escribir el nombre de la base de datos que se creó para el proyecto, en este caso <b>drupal7</b></p>
+    <p>Posteriormente se deben introducir los del usuario que tiene permisos de acceso para esa base de datos</p>
+    <p>Finalizando este apartado dando click en el botón <b>Guardar y continuar</b></p>
+  </li>
+  <li>
+    <p>A continuación comenzará la instalación automática de Drupal 7</p>
+    <p><img src="../img/img6.png" alt="img6"></p>
+  </li>
+  <li>
+    <p>Configurar el sitio en la siguiente pantalla:</p>
+    <p><img src="../img/img7.png" alt="img7"></p>
+    <p>Escribiendo en el campo <b>Nombre del sitio</b> el nombre que tendrá el proyecto, en este caso <b>Drupal 7</b></p>
+    <p>Lo demás son datos administrativos</p>
+    <p><img src="../img/img8.png" alt="img8"></p>
+    <p>Para terminar la instalación hay que hacer click en <b>Guardar y continuar</b></p>
+  </li>
+  <li>
+    <p>Terminado el paso anterior se mostrará un mensaje avisando que se terminó la instalación:</p>
+    <p><img src="../img/img9.png" alt="img9"></p>
+    <p>Aquí únicamente hay que hacer click en <b>Visite su nuevo sitio</b> para visualizar la instalación terminada </p>
+    <p><img src="../img/img10.png" alt="img10"></p>
+  </li>
 </ul>
