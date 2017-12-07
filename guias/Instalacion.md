@@ -30,7 +30,7 @@
 </ul>
 
 <h2> Instalacion Drupal 7.x </h2>
-<ul>
+<ol>
   <li>
     <p> Para realizar la instalación de Drupal primero hay que descargar su núcleo desde el navegador, desde su <a href="https://ftp.drupal.org/files/projects/drupal-7.56.zip"> página oficial</a> para obtener la versión más actualizada de Drupal 7 (Enlace obtenido el 01-09-2017).
     </p>
@@ -114,9 +114,13 @@
     <p>Para terminar la instalación hay que hacer click en <b>Guardar y continuar</b></p>
   </li>
   <li>
+    <p>También se debe modificar de nuevo los permisos del archivo settings.php a sólo lectura, desde la consola utilizando el comando:</p>
+    <p><code> # chmod 444 settings.php </code></p>
+  </li>
+  <li>
     <p>Terminado el paso anterior se mostrará un mensaje avisando que se terminó la instalación:</p>
     <p><img src="../img/img9.png" alt="img9"></p>
     <p>Aquí únicamente hay que hacer click en <b>Visite su nuevo sitio</b> para visualizar la instalación terminada </p>
     <p><img src="../img/img10.png" alt="img10"></p>
   </li>
-</ul>
+</ol>
