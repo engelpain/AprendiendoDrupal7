@@ -1,0 +1,136 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario con Ajax
+ * @author Ing. Angelo Osorio
+ * @date 10-10-2017 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_ajax.module
+ */
+
+/**
+ * Implementación de hook_menu().
+ *
+ * Objetivo:
+ *  Crea el enlace al formulario en la barra de navegación principal.
+ *
+ * Descripción:
+ *  El enlace se llamará Formulario con Ajax
+ *  El enlace apuntará a un formulario
+ *  El formulario estará definido por el hook_form
+ */
+function formulario_ajax_menu() {
+  $items['formulario_ajax'] = array(
+    'title' => 'Formulario con Ajax',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('formulario_ajax_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+/**
+ * Implementación de hook_form().
+ *
+ * Objetivo:
+ *  Crear un formulario que utilice Ajax cambiar las opciones disponibles
+ *  dependiendo de la selección del usuario.
+ *
+ * Descripción:
+ *  Define un formulario usando Ajax:
+ *   - Muestra dos listas select donde una es dependiente de la otra:
+ *     modelos depende de marcas.
+ *   - Cuando cambie la marca del primer select se deben actualizar los
+ *     modelos del segundo select con los modelos de la marca selectionada.
+ */
+function formulario_ajax_form($form, &$form_state){
+  // Obtiene la lista de marcas disponibles
+  $options_marcas = marcas();
+
+  // Verifica si el select de marcas ya tiene una opcion seleccionada, sino, se establece una por defecto.
+  $selected = isset($form_state['values']['marcas_dropdown']) ? $form_state['values']['marcas_dropdown'] : key($options_marcas);
+
+  // Select de Marcas
+  $form['marcas_dropdown'] = array(
+    '#type' => 'select',
+    '#title' => 'Marcas',
+    '#options' => $options_marcas,
+    '#default_value' => $selected,
+    // Se incorpora la propiedad de #ajax para que ante un cambio
+    // de marca se actualicen los modelos asociados a dicha marca.
+    '#ajax' => array(
+      'callback' => 'modelos_callback',
+      
+      // Id del elemento que va a reemplazar.
+      'wrapper' => 'dropdown_modelos_replace',
+    ),
+  );
+  
+  // Select de Modelos
+  $form['modelos_dropdown'] = array(
+    '#type' => 'select',
+    '#title' => 'Modelos',
+    '#options' => modelos($selected),
+    '#default_value' => isset($form_state['values']['modelos_dropdown']) ? $form_state['values']['modelos_dropdown'] : '' ,
+    // Se encapsula el select dentro del div 'dropdown_modelos_replace'
+    // para poder reemplazarlo usando ajax.
+    '#prefix' => '<div id="dropdown_modelos_replace">',
+    '#suffix' => '</div>
+    ',
+  );
+
+  // Botón de submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+
+/**
+ * Implementación de marcas().
+ *
+ * Descripción:
+ *  Función auxiliar que devuelve las marcas para el select de marcas.
+ */
+
+function marcas(){
+  return drupal_map_assoc(array(t('Honda'), t('Toyota'), t('Ford'), t('Volkswagen')));
+}
+
+/**
+ * Implementación de modelos_callback($form, $form_state)
+ *
+ * Descripción:
+ *  Seleciona el select de modelos para ser re-renderizado.
+ *  Será recargado con las nuevas opciones según la marca seleccionada.
+ */
+function modelos_callback($form, $form_state){
+ return $form['modelos_dropdown'];
+}
+ 
+/**
+ * Implementación de marcas().
+ *
+ * Descripción:
+ *  Función auxiliar que devuelve los modelos para el select de modelos.
+ */
+function modelos($key = ''){
+  //Definimos un array anidados con las opciones posibles
+  $options = array(
+    t('Honda') => drupal_map_assoc(array(t('Accord'), t('Civic'), t('CRX'), t('Pilot'))),
+    t('Toyota') => drupal_map_assoc(array(t('Camry'), t('Yaris'), t('Tundra'), t('Tacoma'))),
+    t('Ford') => drupal_map_assoc(array(t('F-150'), t('Explorer'), t('Escape'), t('Edge'))),
+    t('Volkswagen') => drupal_map_assoc(array(t('GTI'), t('Passat'), t('Jeta'), t('Polo'))),
+  );
+ 
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}
