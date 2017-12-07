@@ -51,6 +51,7 @@
     <p> Desde la consola, se entrará a la carpeta sites/default dentro del sistema usando en comando:
     </p>
     <p> <code> $ cd /var/www/html/drupal7/sites/default</code> </p>
+    <p><b>Nota:</b> la ruta puede variar dependiendo del servidor, la versión y/o el sistema operativo</p>
   </li>
   <li>
     <p> Realizar una copia del archivo <code> default.settings.php </code> con el nombre <code> settings.php </code> que será el que guarde todos los datos de configuración de Drupal, con el comando:
@@ -114,7 +115,7 @@
     <p>Para terminar la instalación hay que hacer click en <b>Guardar y continuar</b></p>
   </li>
   <li>
-    <p>También se debe modificar de nuevo los permisos del archivo settings.php a sólo lectura, desde la consola utilizando el comando:</p>
+    <p>También se debe modificar de nuevo los permisos del archivo settings.php (del paso 8) a sólo lectura, desde la consola utilizando el comando:</p>
     <p><code> # chmod 444 settings.php </code></p>
   </li>
   <li>
