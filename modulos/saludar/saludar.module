@@ -1,0 +1,71 @@
+<?php
+// Elaborado por Ing. Angelo Osorio
+// Cenditel, Mérida - Venezuela
+// Fecha de creación: 05/09/2017 (dd,mm,yyyy)
+// Mi primer módulo personalizado en drupal 7
+// @file saludar.info
+
+// hook_menu() - Define los items del menu y los callbacks de páginas
+function saludar_menu() {
+	$items['saludar/hola-mundo'] = array(
+		'title' => 'Hola mundo',
+		'page callback' => 'saludar_hola_mundo',
+		'access callback' => TRUE,
+	);
+	$items['admin/config/content/saludar'] = array(
+		'title' => 'Saludar',
+		'description' => 'Configurar las opciones para el saludo.',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('saludar_configuracion'),
+		'access arguments' => array('administer site configuration'),
+		'file' => 'saludar.admin.inc',
+	);
+	return $items;
+}
+
+/**
+ * Callback que implementa la página: saludar/hola-mundo.
+ */
+function saludar_hola_mundo() {
+	$variables = array(
+		'message' => variable_get('saludar_saludo', 'Hola Mundo'),
+	);
+	return theme('saludar_hola_mundo', $variables);
+}
+
+
+/**
+ * Implementa hook_theme().
+ */
+function saludar_theme() {
+	return array(
+		'saludar_hola_mundo' => array(
+			'template' => 'saludar-hola-mundo',
+		),
+	);
+}
+
+
+/**
+ * Implementa hook_block_info().
+ */
+function saludar_block_info() {
+	$blocks['hola_mundo'] = array(
+		'info' => 'Bloque para Hola Mundo',
+	);
+	return $blocks;
+}
+
+
+/**
+ * Implementa hook_block_view().
+ */
+function saludar_block_view($delta = '') {
+	switch ($delta) {
+		case 'hola_mundo':
+			$block['content'] = saludar_hola_mundo();
+			return $block;
+	}
+}
+
+

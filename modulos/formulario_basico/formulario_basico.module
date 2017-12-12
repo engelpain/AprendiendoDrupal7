@@ -1,0 +1,163 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario
+ * @author Ing. Angelo Osorio
+ * @date 04-10-2017 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_basico.module
+ */
+
+
+
+/**
+ * Implementación de hook_menu().
+ *
+ * Objetivo:
+ *  Crear el enlace al formulario en la barra de navegación principal.
+ *
+ * Descripción:
+ *  La dirección URL del enlace será /formulario_ajax/ 
+ *  El enlace se llamará Formulario Básico
+ *  El enlace apuntará al formulario definido por el hook_form
+ */
+function formulario_basico_menu(){
+  $items['formexample'] = array(
+    'title' => 'Formulario Básico',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('formulario_basico_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+
+
+/**
+ * Implementación de hook_form()
+ *
+ * Objetivo:
+ *  Crear un formulario que imprima la información
+ *  que se solicite en pantalla luego de enviada.
+ *
+ * Descripción:
+ *  El formulario posee dos secciones, Información Personal y Color
+ *  - Información Personal: Debe contener dos campos: Nombre y Apellido
+ *  - Color: Debe contener una lista seleccionable de colores
+ */
+function formulario_basico_form(){
+
+  // Sección Nombre
+  $form['personal'] = array(
+    '#title' => t('Información Personal'),
+    '#type' => 'fieldset',
+    '#description' => t('¿Cómo le suelen llamar?'),
+  );
+    // Campo Nombre
+    $form['personal']['nombre'] = array(
+      '#title' => t('Nombre'),
+      '#type' => 'textfield',
+      '#description' => t('Sólo letras, debe comenzar por una letra mayúscula'),
+      '#maxlength' => 25,
+    );
+    // Campo Apellido
+    $form['personal']['apellido'] = array(
+      '#title' => t('Apellido'),
+      '#type' => 'textfield',
+      '#description' => t('Sólo letras, debe comenzar por una letra mayúscula'),
+      '#maxlength' => 25,
+    );
+
+  // Sección Color
+  $form['color'] = array(
+    '#title' => t('Color'),
+    '#type' => 'fieldset',
+    '#description' => t('Información sobre sus gustos'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+    // Opciones del Select de colores
+    $form['color_options'] = array(
+      '#type' => 'value',
+      '#value' => array(t('Rojo'),t('Amarillo'),t('Verde'),t('Azul')),
+    );
+    // Select de colores
+    $form['color']['favorite_color'] = array(
+      '#title' => t('Color Favorito'),
+      '#type' => 'select',
+      '#description' => t('Por favor seleccione un color'),
+      '#options' => $form['color_options']['#value'],
+    );
+
+  // Botón Submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+
+/**
+ * Implementación de _form_validate()
+ *
+ * Objetivo:
+ *  Validar el formulario
+ *
+ * Descripción:
+ *  Validar que el campo nombre sea de sólo letras sin espacios comenzando en mayúsculas
+ *  Validar que el campo apellido sea de sólo letras sin espacios comenzando en mayúsculas
+ */
+
+function formulario_basico_form_validate(&$form, &$form_state){
+
+  // Expresión regular: Sólo letras, primera letra en mayúscula,  
+  $regex = '/^([A-Z]){1}+([a-z]){1,24}$/';
+
+  // Validación del nombre
+  if(!preg_match($regex, $form_state['values']['nombre'])) {
+    form_set_error('nombre', 'Incorrecto');
+  }
+/*
+  // Array del mensaje
+  $validar['nombre'] = [
+    'nombre' => (preg_match($regex, $form_state['values']['nombre'])) ? "Correcto" : "Incorrecto",
+    'estado' => (preg_match($regex, $form_state['values']['nombre'])) ? "status" : "error"
+  ];
+
+  // Imprime el mensaje
+  drupal_set_message($validar['nombre']['nombre'], $validar['nombre']['estado']);
+*/
+
+/*
+  if($form_state['values']['nombre'] == 'King Kong'){
+  //We notify the form API that this field has failed.
+    form_set_error('user_name', t('King Kong no es una persona'));
+  }
+*/
+}
+
+/**
+ * Implementación de drupal_form_submit()
+ *
+ * Objetivo:
+ * Enviar un mensaje dependiendo de si llenó los datos correctamente o no
+ *
+ * Descripción:
+ * 
+ *
+ * Nota:
+ * form_state = array que contiene todos los valores del formulario
+ *
+ */
+function formulario_basico_form_submit(&$form, &$form_state){
+  print_r($form_state);
+  $name = $form_state['values']['nombre'];
+  $lastname = $form_state['values']['apellido'];
+  $color_key = $form_state['values']['favorite_color'];
+  $color = $form_state['values']['color_options'][$color_key];
+  drupal_set_message(t('A %name %apellido le gusta el color %color',array('%name' => $name, '%apellido' => $lastname, '%color' => $color)));
+}

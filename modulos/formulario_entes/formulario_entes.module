@@ -1,0 +1,186 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario dinámico con AJAX
+ * Módulo creado para ingresar los estados, municipios y parroquias de Venezuela
+ * Éstos aparecen dinámicamente en los menús seleccionables utilizando AJAX
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-10 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_entes.module
+ */
+
+/**
+ * Implementación del hook_menu()
+ * Crea un enlace al formulario formulario_entes_form
+ * en el menú de navegación.
+ *
+ */
+function formulario_entes_menu() {
+  $items['formulario_entes'] = array(
+    'title' => 'Formulario de Entes',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('formulario_entes_form'),
+    'access callback' => TRUE,
+  'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+
+
+/**
+ * Implements hook_form().
+ */
+function formulario_entes_form($form, &$form_state){
+
+  //Variables de estados
+  $estados = buscaestados();
+  $estadoseleccionado = isset($form_state['values']['estados']) ? $form_state['values']['estados'] : key($estados);
+  //Variables de municipios
+  $municipios = buscamunicipios($estadoseleccionado);
+  $municipioseleccionado = isset($form_state['values']['municipios']) ? $form_state['values']['municipios'] : key($municipios);
+  //Variables de parroquias
+  $parroquias = buscaparroquias($municipioseleccionado);
+  $parroquiaseleccionada = isset($form_state['values']['parroquias']) ? $form_state['values']['parroquias'] : key($parroquias);
+
+  //Fieldset
+  $form['formulario'] = array(
+    '#title' => t('Formulario'),
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  // Select de los estados de Venezuela
+  $form['formulario']['estados'] = array(
+    '#title' => t('Seleccione un estado'),
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#options' => $estados,
+    '#ajax' => array(
+      'callback' => 'municipios_callback',
+      'wrapper' => 'municipios_replace',
+    ),
+  );
+
+  // Select de municipios de los estados de Venezuela
+  $form['formulario']['municipios'] = array(
+    '#title' => t('Seleccione un municipio'),
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#options' => $municipios,
+    '#prefix' => '<div id="municipios_replace">',
+    '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'parroquias_callback',
+      'wrapper' => 'parroquias_replace',
+    ),
+  );
+
+  // Select de las parroquias de los municipios de los estados de Venezuela
+  $form['formulario']['parroquias'] = array(
+    '#title' => t('Seleccione una parroquia'),
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#options' => $parroquias,
+    '#prefix' => '<div id="parroquias_replace">',
+    '#suffix' => '</div>',
+  );
+
+
+  // Botón de Submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+// Función que re-renderiza el select de los municipios con las nuevas opciones marcadas
+function municipios_callback($form, $form_state){
+  return $form['formulario']['municipios'];
+}
+
+// Función que re-renderiza el select de los municipios con las nuevas opciones marcadas
+function parroquias_callback($form, $form_state){
+  return $form['formulario']['parroquias'];
+}
+
+// Consulta a la base de datos
+// Busca todos los datos de los estados y los recoge en un array
+// SELECT * FROM estados;
+function buscaestados() {
+  $query = db_select('estados', 'e') ->fields('e', array()) ->execute();
+  while($record = $query->fetchAssoc()) {
+    //if ($record["codigo"] >= 1 && $record["codigo"] < 6) {
+      $resultado[$record["codigo"]] = $record["nombre"];
+    //}
+  }
+  return $resultado;
+}
+
+// Consulta a la base de datos
+// Busca todos los datos de los municipios de los estados y los recoge en un array
+// SELECT * FROM municipios;
+function buscamunicipio($caso) {
+  $query = db_select('municipios', 'm') ->fields('m', array()) ->execute();
+  // Filtra la información que será guardada en el array $resultado que se
+  // devuelve posteriormente al formulario con las opciones solicitadas
+  // por el usuario en el formulario
+  switch ($caso) {
+    // Filtra la información del $query a SELECT * FROM municipios WHERE estado == $caso
+    case $caso:
+      while($record = $query->fetchAssoc()) {
+        if ($record["estado"] == $caso) {
+          $resultado[$record["codigo"]] = $record["nombre"];
+        }
+      }
+      break;
+  }
+  return $resultado;
+}
+function buscamunicipios($key = ''){
+  $options = array(
+    $key => buscamunicipio($key),
+  );
+
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}
+
+// Consulta a la base de datos
+// Busca todos los datos de las parroquias de los municipios de los estados y los recoge en un array
+// SELECT * FROM parroquias;
+function buscaparroquia($caso) {
+  $query = db_select('parroquias', 'p') ->fields('p', array()) ->execute();
+  // Filtra la información que será guardada en el array $resultado que se
+  // devuelve posteriormente al formulario con las opciones solicitadas
+  // por el usuario en el formulario
+  switch ($caso) {
+    // Filtra la información del $query a SELECT * FROM parroquias WHERE municipio == $caso
+    case $caso:
+      while($record = $query->fetchAssoc()) {
+        if ($record["municipio"] == $caso) {
+          $resultado[$record["codigo"]] = $record["nombre"];
+        }
+      }
+      break;
+  }
+  return $resultado;
+}
+function buscaparroquias($key = ''){
+  $options = array(
+    $key => buscaparroquia($key),
+  );
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}

@@ -1,0 +1,47 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario con consultas con AJAX
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-10 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file pruebados.module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function pruebados_menu() {
+  $items['pruebados'] = array(
+    'title' => 'Prueba Dos',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pruebados_form'),
+    'access callback' => TRUE,
+  'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ */
+function pruebados_form($form, &$form_state) {
+
+  // Primer Select
+  $form['primerselect'] = array(
+    '#type' => 'select',
+    '#title' => t('Primer Select'),
+    '#options' => primero(),
+  );
+
+
+
+// Submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}

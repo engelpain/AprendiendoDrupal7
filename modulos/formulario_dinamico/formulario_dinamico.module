@@ -1,0 +1,204 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-04 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_dinamico.module
+ */
+
+
+
+/**
+ * Implements hook_menu()
+ */
+function formulario_dinamico_menu(){
+  $items['form_example_dynamic'] = array(
+  'title' => 'Formulario States',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('formulario_dinamico_form'),
+  'access callback' => TRUE,
+  'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+
+
+/**
+ * Implements hook_form().
+ */
+
+function formulario_dinamico_form($form, &$form_state){
+  // Radios con las posibles tipos de salas
+  $form['room_type'] = array(
+    '#type' => 'radios',
+    '#options' => drupal_map_assoc(
+      array(
+        t('Habitación de estudio'), // Primera opcion
+        t('Sala de conferencias pequeña'), // Segunda opcion
+        t('Sala de reuniones') // Tercera opcion
+      )
+    ),
+    '#title' => t('Qué tipo de habitación necesitas?'),
+  );
+  // Fieldset con la información adicional de la habitación de estudio.
+  $form['study_room'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Detalles de la habitación de estudio'),
+    '#states' => array(
+      'visible' => array(
+        // Se hará visible cuando el valor de "room_type" sea "Habitación de estudio"
+        ':input[name="room_type"]' => array('value' => t('Habitación de estudio')),
+      ),
+    ),
+  );
+  $form['study_room']['equipment'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Detalles de la habitación de estudio'),
+    '#options' => drupal_map_assoc(array(t('Sillas'),t('PC'))),
+  );
+  $form['study_room']['chairs'] = array(
+    '#type' => 'textfield',
+    '#title' => t('¿Cuántas sillas necesitas?'),
+    '#size' => 4,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="equipment[Sillas]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+  $form['study_room']['pc'] = array(
+    '#type' => 'textfield',
+    '#title' => t('¿Qué tipo de ordenador necesitas?'),
+    '#size' => 15,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="equipment[PC]"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  // Fieldset para la información adicional sobre la sala de conferencias.
+  $form['small_comference_room'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Información sobre la sala de conferencias pequeña'),
+    '#size' => 15,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="room_type"]' => array('value' => t('Sala de conferencias pequeña')),
+      ),
+    ),
+  );
+  $form['small_comference_room']['how_many_pcs'] = array(
+    '#type' => 'select',
+    '#title' => t('Cuántos PCs necesitas en la sala de conferencias'),
+    '#options' => array(
+      1 => t('Uno'),
+      2 => t('Dos'),
+      3 => t('Tres'),
+      4 => t('Cuatro'),
+      5 => t('Cinco o más'),
+    ),
+  );
+  $form['small_comference_room']['comment'] = array(
+    '#type' => 'item',
+    '#description' => t('Vaya,esos van a ser bastantes'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="how_many_pcs"]' => array('value' => '5'),
+      ),
+    ),
+  );
+  $form['small_comference_room']['room_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('¿Qué habitacion quiere usar? :'),
+  );
+  $form['small_comference_room']['hours'] = array(
+    '#type' => 'select',
+    '#options' => drupal_map_assoc(array(t('Free'), t('Paid'))),
+    '#title' =>t('¿Quieres reservar la sala cuando este libre (Free) o pagar por uso prioritario (Paid)?'),
+  );
+  $form['small_comference_room']['hours_writein'] = array(
+    '#type' => 'textfield',
+    '#size' =>50,
+    '#title' =>t('Por favor introduce fecha,hora que te gustaría reservar la sala al igual que la duración.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="hours"]' => array('value' => t('Paid')),
+      ),
+    ),
+  );
+  $form['small_comference_room']['reminder'] = array(
+    '#type' => 'item',
+    '#description' =>t('Recuerda introducir la día,hora de comienzo y fin'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="hours"]' => array('value' => t('Paid')),
+        ':input[name="hours_writein"]' => array('filled' => TRUE),
+      ),
+    ),
+  );
+ 
+  // Fieldset para el caso "Sala de reuniones"
+  $form['board_room']= array(
+    '#type' => 'item',
+    '#title' =>t('Informacion sobre la sala de reuniones'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="room_type"]' => array('value' => t('Sala de reuniones')),
+      ),
+    ),
+  );
+  $form['board_room']["more_info"]= array(
+    '#type' => 'textarea',
+    '#title' =>t('Por favor introduce fecha,hora que te gustaría reservar la sala al igual que la duración.'),
+  );
+  $form['board_room']["info_provide"]= array(
+    '#type' => 'checkbox',
+    '#title' =>t('Has proporcionado la informacion necesaria anteriormente'),
+    '#disabled' => TRUE,
+    '#states' => array(
+      'checked' => array(
+        ':input[name="more_info"]' => array('filled' => TRUE),
+      ),
+    ),
+  );
+
+  $form['expand_more_info'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Marca si deseas aportar información adicional'),
+  );
+
+
+
+
+
+//Field set para la información adicional independientemente de la sala elegida.
+  $form['more_info'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Instrucciones especiales'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#states' => array(
+      'expanded' => array(
+        ':input[name="expand_more_info"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+
+  $form['more_info']['feedback'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Por favor introduzca la informacíon adicional que nos ayude en su petición'),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+
+  return $form;
+}

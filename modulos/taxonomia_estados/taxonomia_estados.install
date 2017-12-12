@@ -1,0 +1,73 @@
+<?php
+/**
+  * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+  * Departamento de Desarrollo
+  * Módulo Drupal para importar taxonomías
+  * @author Ing. Angelo Osorio
+  * @date 2017-10-02 // (año-mes-dia)
+  * @version 1.-dev // (1.0)
+  * @file taxonomia_estados.install
+  */
+
+// Array con las marcas de carros que se quiere insertar en con el módulo
+function taxonomia_estados() {
+  return array(
+    'Distrito Capital',
+    'Amazonas',
+    'Anzoátegui',
+    'Apure',
+    'Aragua',
+    'Barinas',
+    'Bolívar',
+    'Carabobo',
+    'Cojedes',
+    'Delta Amacuro',
+    'Falcón',
+    'Guárico',
+    'Lara',
+    'Mérida',
+    'Miranda',
+    'Monagas',
+    'Nueva Esparta',
+    'Portuguesa',
+    'Sucre',
+    'Táchira',
+    'Trujillo',
+    'Yaracuy',
+    'Zulia',
+    'Vargas',
+    'Dependencias Federales',
+  );
+}
+
+function crea_taxonomias() {
+  // Se crea el vocabulario.
+  taxonomy_vocabulary_save((object) array(
+    'name' => 'Estados de Venezuela',
+    'machine_name' => 'estados',
+  ));
+ 
+  // Se obtiene el Id del vocabulario recién creado.
+  $vid = taxonomy_vocabulary_machine_name_load('estados')->vid;
+ 
+  // Se crea los términos de la taxonomía.
+  $terminos = taxonomia_estados();
+  foreach ($terminos as $id => $nombre) {
+    taxonomy_term_save((object) array(
+      'name' => $nombre,
+      'vid' => $vid,
+      'format' => 'filtered_html',
+    ));
+  }
+}
+
+/**
+  * Implements hook_install()
+  */
+
+/**
+ * Implements hook_install().
+ */
+function taxonomia_estados_install() {
+  crea_taxonomias();
+}

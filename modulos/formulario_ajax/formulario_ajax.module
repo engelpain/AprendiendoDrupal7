@@ -14,12 +14,12 @@
  * Implementación de hook_menu().
  *
  * Objetivo:
- *  Crea el enlace al formulario en la barra de navegación principal.
+ *  Crear el enlace al formulario en la barra de navegación principal.
  *
  * Descripción:
+ *  La dirección URL del enlace será /formulario_ajax/ 
  *  El enlace se llamará Formulario con Ajax
- *  El enlace apuntará a un formulario
- *  El formulario estará definido por el hook_form
+ *  El enlace apuntará al formulario definido por el hook_form
  */
 function formulario_ajax_menu() {
   $items['formulario_ajax'] = array(

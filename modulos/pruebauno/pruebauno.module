@@ -1,0 +1,124 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario con consultas con AJAX
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-10 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file pruebauno.module
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function pruebauno_menu() {
+  $items['pruebauno'] = array(
+    'title' => 'Prueba Uno',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pruebauno_form'),
+    'access callback' => TRUE,
+  'type' => MENU_NORMAL_ITEM
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ */
+function pruebauno_form($form, &$form_state) {
+
+  $primerselect = primero();
+  $primerseleccionado = isset($form_state['values']['primerselect']) ? $form_state['values']['primerselect'] : key($primerselect);
+  $segundoselect = segundo($primerseleccionado);
+  $segundoseleccionado = isset($form_state['values']['segundoselect']) ? $form_state['values']['segundoselect'] : key($segundoselect);
+  $tercerselect = tercero($segundoseleccionado);
+  $tercerseleccionado = isset($form_state['values']['tercerselect']) ? $form_state['values']['tercerselect'] : '';
+
+  // Primer Select
+  $form['primerselect'] = array(
+    '#type' => 'select',
+    '#title' => t('Primer Select'),
+    '#options' => primero(),
+    '#default_value' => $primerseleccionado,
+    '#ajax' => array(
+      'callback' => 'segundoselect_callback',
+      'wrapper' => 'segundo_replace',
+    ),
+  );
+  // Segundo Select
+  $form['segundoselect'] = array(
+    '#type' => 'select',
+    '#title' => 'Segundo Select',
+    '#options' => $segundoselect,
+    '#default_value' => $segundoseleccionado,
+    '#prefix' => '
+    <div id="segundo_replace">',
+    '#suffix' => '</div>
+    ',
+    '#ajax' => array(
+      'callback' => 'tercerselect_callback',
+      'wrapper' => 'tercer_replace',
+    ),
+  );
+  // Tercer Select
+  $form['tercerselect'] = array(
+    '#type' => 'select',
+    '#title' => 'Tercer Select',
+    '#options' => $tercerselect,
+    '#default_value' => $segundoseleccionado,
+    '#prefix' => '
+    <div id="tercer_replace">',
+    '#suffix' => '</div>
+    ',
+  );
+
+
+
+// Submit
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Enviar'),
+  );
+  return $form;
+}
+
+// Re-render Form
+function segundoselect_callback($form, $form_sate){
+  return $form['segundoselect'];
+} 
+function tercerselect_callback($form, $form_sate){
+  return $form['tercerselect'];
+} 
+
+
+function primero(){
+  return drupal_map_assoc(array(t('1'), t('2')));
+}
+
+function segundo($key = ''){
+  $options = array(
+    t('1') => drupal_map_assoc(array(t('1.1'), t('1.2'))),
+    t('2') => drupal_map_assoc(array(t('2.1'), t('2.2'))),
+  );
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}
+
+function tercero($key = ''){
+  $options = array(
+    t('1.1') => drupal_map_assoc(array(t('1.1.1'), t('1.1.2'))),
+    t('1.2') => drupal_map_assoc(array(t('1.2.1'), t('1.2.2'))),
+    t('2.1') => drupal_map_assoc(array(t('2.1.1'), t('2.1.2'))),
+    t('2.2') => drupal_map_assoc(array(t('2.2.1'), t('2.2.2'))),
+  );
+  if(isset($options[$key])){
+    return $options[$key];
+  } else {
+    return array();
+  }
+}

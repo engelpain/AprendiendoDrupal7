@@ -1,0 +1,14 @@
+; Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+; CENDITEL, Mérida - Venezuela
+; Dirección de Desarrollo
+; Módulo Drupal de prueba de funciones cruzadas
+; @author Ing. Angelo Osorio
+; @date 01-12-2017 // (dd,mm,yyyy)
+; @version 1.-dev // (1.0)
+; @file pruebados.info
+
+name = Prueba Dos
+description = "Segundo formulario de prueba de funciones cruzadas"
+core = 7.x
+package = Aprendiendo Drupal
+version = "7.x-1.-dev"

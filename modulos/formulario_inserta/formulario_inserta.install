@@ -1,0 +1,101 @@
+<?php
+/**
+ * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+ * CENDITEL, Mérida - Venezuela
+ * Dirección de Desarrollo
+ * Módulo Drupal para crear un formulario simple para introducir información en la base de datos
+ * @author Ing. Angelo Osorio
+ * @date 2017-10-19 // (dd,mm,yyyy)
+ * @version 1.-dev // (1.0)
+ * @file formulario_inserta.install
+ */
+
+
+
+/**
+ * Implements hook_install().
+ */
+function formulario_inserta_install() {
+  datos();
+}
+
+
+
+/**
+ * Implementación del hook_schema()
+ * Crea una tabla en la base de datos llamada datos_formulario
+ * La misma cuenta con siete campos:
+ * nombre: varchar(50), NOT NULL; ---------- Nombre del usuario
+ * apellido: varchar(50), NOT NULL; -------- Apellido del usuario
+ * cedula: int, NOT NULL; ------------------ Cédula del usuario
+ * direccion: varchar(255), NOT NULL; ----- Dirección del usuario
+ * empleo: varchar(2), NOT NULL; ---------- Empleo
+ * vocacion: varchar(50) , NOT NULL; ------ Vocación
+ * educacion: varchar(255), NOT NULL; ----- Grado de instrucción
+ */
+function formulario_inserta_schema() {
+  $schema['datos_formulario'] = array(
+    'description' => 'Tabla para almacenar los datos del módulo formulario_inserta',
+    'fields' => array(
+      'nombre' => array(
+        'description' => 'Nombre del usuario',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'apellido' => array(
+        'description' => 'Apellido del usuario',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'cedula' => array(
+        'description' => 'Cédula del usuario',
+        'length' => 8,
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'direccion' => array(
+        'description' => 'Dirección del usuario',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'empleo' => array(
+        'description' => 'Empleo',
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'vocacion' => array(
+        'description' => 'Vocación',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'educacion' => array(
+        'description' => 'Grado de instrucción',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'primary key' => array('cedula'),
+  );
+  return $schema;
+}
+
+function datos() {
+  db_insert('datos_formulario')
+    ->fields(array('nombre', 'apellido', 'cedula', 'direccion', 'empleo', 'vocacion', 'educacion'))
+    ->values(array('nombre' => 'Angelo', 'apellido' => 'Osorio', 'cedula' => 12345678, 'direccion' => 'Chamita', 'empleo' => 'Sí', 'vocacion' => 'Programador', 'educacion' => 'Universitaria',))
+    ->execute();
+}

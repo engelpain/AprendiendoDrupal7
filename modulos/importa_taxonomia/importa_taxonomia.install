@@ -1,0 +1,53 @@
+<?php
+/**
+  * Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+  * Departamento de Desarrollo
+  * Módulo Drupal para importar taxonomías
+  * @author Ing. Angelo Osorio
+  * @date 2017-10-02 // (año-mes-dia)
+  * @version 1.-dev // (1.0)
+  * @file taxonomia.module
+  */
+
+/**
+  * Implements hook_install()
+  * Llama a la función pruebas_crear_taxonomia() durante el proceso de instalación
+  */
+function importa_taxonomia_install() {
+  pruebas_crear_taxonomia();
+}
+
+// Función con el array de las marcas de carros que se quiere insertar con el módulo
+function pruebas_marcas_carros() {
+  $arreglo = array(
+    'Toyota',
+    'Ford',
+    'Volkswagen',
+    'Fiat',
+    'Honda',
+    'Chevrolet',
+    'Dodge',
+  );
+  return $arreglo;
+}
+
+function pruebas_crear_taxonomia() {
+  // Se crea el vocabulario.
+  taxonomy_vocabulary_save((object) array(
+    'name' => 'Marcas de Carros',
+    'machine_name' => 'marcas_carros',
+  ));
+ 
+  // Se obtiene el Id del vocabulario recién creado.
+  $vid = taxonomy_vocabulary_machine_name_load('marcas_carros')->vid;
+ 
+  // Se crea los términos de la taxonomía.
+  $terminos = pruebas_marcas_carros();
+  foreach ($terminos as $id => $nombre) {
+    taxonomy_term_save((object) array(
+      'name' => $nombre,
+      'vid' => $vid,
+      'format' => 'filtered_html',
+    ));
+  }
+}
