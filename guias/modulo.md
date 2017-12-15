@@ -43,22 +43,15 @@ punto y coma (<b> ; </b>), por ejemplo:</p>
 
 <h4> Código dentro de saludo.info </h4>
 <p>
-  <code>
-    ;name: se utiliza para declarar el nombre del módulo que se está creando. <br>
-    name = Saludo
-  </code> <br>
-  <code>
-    ;description: Se utiliza para declarar una pequeña descripción de la utilidad del módulo. <br>
-    description = "Módulo para saludar al usuario hola mundo"
-  </code> <br>
-  <code>
-    ;package: Se utiliza para declarar a que paquete pertenece el módulo, se puede <br>
-    ;dejar vacío este campo, escribir el nombre de paquetes ya existentes como tools <br>
-    ;o crear nuevos paquetes como en este caso. <br>
-    package = Aprendiendo Drupal
-  </code> <br>
-  <code>
-    ;core: Declara el núcleo de drupal con el que será compatible. <br>
-    core = 7.x
-  </code>
+  <code> ;name: se utiliza para declarar el nombre del módulo que se está creando. </code> <br>
+  <code> name = Saludo </code> <br>
+  <code> ;description: Se utiliza para declarar una pequeña </code> <br>
+  <code> ;descripción de la utilidad del módulo. </code> <br>
+  <code> description = "Módulo para saludar al usuario hola mundo" </code> <br>
+  <code> ;package: Se utiliza para declarar a que paquete pertenece el módulo, se puede </code> <br>
+  <code> ;dejar vacío este campo, escribir el nombre de paquetes ya existentes como tools </code> <br>
+  <code> ;o crear nuevos paquetes como en este caso. </code> <br>
+  <code> package = Aprendiendo Drupal </code> <br>
+  <code> ;core: Declara el núcleo de drupal con el que será compatible.</code> <br>
+  <code> core = 7.x </code>
 </p>
