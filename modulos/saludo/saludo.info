@@ -1,0 +1,22 @@
+; Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)
+; CENDITEL, Mérida - Venezuela
+; Dirección de Desarrollo
+; Módulo Drupal para crear un formulario con Ajax
+; @author Ing. Angelo Osorio
+; @date 15-10-2017 // (dd,mm,yyyy)
+; @version 1.-dev // (1.0)
+; @file saludo.info
+
+;name: se utiliza para declarar el nombre del módulo que se está creando.
+name = Saludar
+
+;description: Se utiliza para declarar una pequeña descripción de la utilidad del módulo.
+description = "Módulo que dice hola mundo"
+
+;package: Se utiliza para declarar a que paquete pertenece el módulo, se puede
+;dejar vacío este campo, escribir el nombre de paquetes ya existentes como tools
+;o crear nuevos paquetes como en este caso.
+package = Aprendiendo Drupal
+
+;core: Declara el núcleo de drupal con el que será compatible.
+core = 7.x

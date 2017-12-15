@@ -1,6 +1,6 @@
 <h1> Guía de instalación de Drupal 7.x </h1>
 <p> Centro Nacional de Desarrollo e Investigación de Tecnologías Libres (CENDITEL)</p>
-<p> CENDITEL, Mérida - Venezuela </p>
+<p> <a href="https://www.cenditel.gob.ve/">CENDITEL</a>, Mérida - Venezuela </p>
 <p> Dirección de Desarrollo </p>
 <p> Autor: <a href="https://twitter.com/Engel_PAIN">Ing. Angelo Osorio</a> </p>
 <p> Fecha de Elaboración: 01-09-2017 (dd,mm,aaaa)</p><br>
